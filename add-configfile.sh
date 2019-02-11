@@ -990,13 +990,13 @@ EOF
 
 function gitignorefile
 {
-    echo "$gitignore" > $PWD/.gitignore
+    echo "$gitignore" > "$PWD/.gitignore"
 }
 
 
 function editorconfigfile
 {
-    echo "$editorconfig" > $PWD/.editorconfig
+    echo "$editorconfig" > "$PWD/.editorconfig"
 }
 
 function allfiles
