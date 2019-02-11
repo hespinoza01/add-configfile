@@ -5,7 +5,9 @@
 #Descripción: Script para generar archivos de configuración para gitignore y editorconfig
 #Contacto: haroldesptru@gmail.com
 
-read -d '' gitignore << EOF
+gitignore()
+{
+value="
 # Created by https://www.gitignore.io/api/c,c++,node,ruby,java,rails,linux,flask,python,django,laravel,netbeans,jetbrains,sublimetext,monodevelop,jetbrains+iml,jetbrains+all
 # Edit at https://www.gitignore.io/?templates=c,c++,node,ruby,java,rails,linux,flask,python,django,laravel,netbeans,jetbrains,sublimetext,monodevelop,jetbrains+iml,jetbrains+all
 
@@ -98,7 +100,7 @@ media
 ### Django.Python Stack ###
 # Byte-compiled / optimized / DLL files
 *.py[cod]
-*$py.class
+*\$py.class
 
 # C extensions
 
@@ -780,11 +782,15 @@ bh_unicode_properties.cache
 GitHub.sublime-settings
 
 # End of https://www.gitignore.io/api/c,c++,node,ruby,java,rails,linux,flask,python,django,laravel,netbeans,jetbrains,sublimetext,monodevelop,jetbrains+iml,jetbrains+all
+"
+echo "$value" > "$PWD/.gitignore"
+echo "Archivo creado: '.gitignore'"
+}
 
-EOF
 
-
-read -d '' editorconfig << EOF
+editorconfig()
+{
+value="
 # http://EditorConfig.org
 
 # This file is the top-most EditorConfig file
@@ -984,34 +990,68 @@ csharp_space_between_parentheses = expressions:warning
 csharp_space_between_square_brackets = false:warning
 # Wrapping Options
 csharp_preserve_single_line_blocks = true:warning
-csharp_preserve_single_line_statements = false:warning
-EOF
+csharp_preserve_single_line_statements = false:warning"
 
-
-function gitignorefile
-{
-    echo "$gitignore" > "$PWD/.gitignore"
+echo "$value" > "$PWD/.editorconfig"
+echo "Archivo creado: '.editorconfig'"
 }
 
 
-function editorconfigfile
+license()
 {
-    echo "$editorconfig" > "$PWD/.editorconfig"
+if [ -n "$1" ] && [ "$1" != '--autor' ]; then
+		NAME=$1
+	else
+		NAME=$([ -n "$USER_LICENSE" ] && echo "$USER_LICENSE" || echo "$USER")
+fi
+
+value="
+MIT License
+
+Copyright (c) $(date +'%Y') $NAME
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the \"Software\"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE."
+
+echo "$value" > "$PWD/LICENSE"
+echo "Archivo creado: 'LICENSE'"
 }
 
-function allfiles
+
+allfiles()
 {
-    gitignorefile
-    editorconfigfile
+    gitignore
+    editorconfig
+	license
 }
 
 
-while (($# >0)); do case $1 in
-		-a | --All) allfiles;;
-		-g | --git) gitignorefile;;
-		-e | --edt) editorconfigfile;;
-		*) echo "Sin argumentos válidos"; break;;
-	esac; shift 1
-done
+if [ $# -gt 0 ]; then
+		while (($# > 0)); do case $1 in
+				-a | --All) allfiles;;
+				-g | --git) gitignore;;
+				-e | --edt) editorconfig;;
+				-l* | --license*) license "${1#*=}";;
+				*) echo "Sin argumentos válidos"; break;;
+			esac; shift 1
+		done
 
-echo "Ejecución completa"
+		echo "Ejecución completa."
+	else
+		echo "No se ingresaron parámetros. Ejecución finalizada."
+fi
