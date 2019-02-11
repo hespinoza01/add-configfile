@@ -1043,9 +1043,9 @@ allfiles()
 
 if [ $# -gt 0 ]; then
 		while (($# > 0)); do case $1 in
-				-a | --All) allfiles;;
-				-g | --git) gitignore;;
-				-e | --edt) editorconfig;;
+				-a | --all) allfiles;;
+				-g | --gitignore) gitignore;;
+				-e | --editorconfig) editorconfig;;
 				-l* | --license*) license "${1#*=}";;
 				*) echo "Sin argumentos válidos"; break;;
 			esac; shift 1
